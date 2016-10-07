@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.noveogroup.android.check'
 
 android {
     compileSdkVersion 24
@@ -80,4 +81,6 @@ dependencies {
     compile 'com.hannesdorfmann.annotatedadapter:annotation:1.1.1'
     compile 'com.hannesdorfmann.annotatedadapter:support-recyclerview:1.1.1'
     apt 'com.hannesdorfmann.annotatedadapter:processor:1.1.1'
+
+    compile 'me.dm7.barcodescanner:zxing:1.9'
 }
