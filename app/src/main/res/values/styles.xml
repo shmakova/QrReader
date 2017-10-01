@@ -10,11 +10,4 @@
         <item name="android:textColorSecondary">@color/secondary_text</item>
     </style>
 
-    <style name="AppOverlayTheme" parent="AppTheme">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
-
 </resources>

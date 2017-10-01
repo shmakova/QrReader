@@ -4,8 +4,8 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Base presenter implementation.
@@ -15,7 +15,7 @@ import rx.subscriptions.CompositeSubscription;
 public class BasePresenter<V> {
 
     @NonNull
-    private final CompositeSubscription subscriptionsToUnsubscribeOnUnbindView = new CompositeSubscription();
+    private final CompositeDisposable disposablesToUnsubscribeOnUnbindView = new CompositeDisposable();
 
     @Nullable
     private volatile V view;
@@ -25,7 +25,8 @@ public class BasePresenter<V> {
         final V previousView = this.view;
 
         if (previousView != null) {
-            throw new IllegalStateException("Previous view is not unbounded! previousView = " + previousView);
+            throw new IllegalStateException("Previous view is not unbounded! previousView = "
+                    + previousView);
         }
 
         this.view = view;
@@ -36,11 +37,13 @@ public class BasePresenter<V> {
         return view;
     }
 
-    protected final void unsubscribeOnUnbindView(@NonNull Subscription subscription, @NonNull Subscription... subscriptions) {
-        subscriptionsToUnsubscribeOnUnbindView.add(subscription);
+    protected final void unsubscribeOnUnbindView(
+            @NonNull Disposable disposable,
+            @NonNull Disposable... disposables) {
+        disposablesToUnsubscribeOnUnbindView.add(disposable);
 
-        for (Subscription s : subscriptions) {
-            subscriptionsToUnsubscribeOnUnbindView.add(s);
+        for (Disposable d : disposables) {
+            disposablesToUnsubscribeOnUnbindView.add(d);
         }
     }
 
@@ -52,10 +55,11 @@ public class BasePresenter<V> {
         if (previousView == view) {
             this.view = null;
         } else {
-            throw new IllegalStateException("Unexpected view! previousView = " + previousView + ", view to unbind = " + view);
+            throw new IllegalStateException("Unexpected view! previousView = " + previousView
+                    + ", view to unbind = " + view);
         }
 
         // Unsubscribe all subscriptions that need to be unsubscribed in this lifecycle state.
-        subscriptionsToUnsubscribeOnUnbindView.clear();
+        disposablesToUnsubscribeOnUnbindView.clear();
     }
 }

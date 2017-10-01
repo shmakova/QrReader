@@ -1,50 +1,73 @@
 package ru.shmakova.qr.presentation.main;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.TextView;
+
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.barcode.Barcode;
 
 import ru.shmakova.qr.R;
-import ru.shmakova.qr.presentation.qr.QrReaderFragment;
+import ru.shmakova.qr.presentation.barcode.BarcodeCaptureActivity;
+import timber.log.Timber;
 
 
-public class MainActivity extends AppCompatActivity {
-    private static final int CAMERA_PERMISSION_CODE = 1;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final int RC_BARCODE_CAPTURE = 9001;
+    private CompoundButton autoFocus;
+    private CompoundButton useFlash;
+    private TextView statusMessage;
+    private TextView barcodeValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        requestCameraPermission();
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_frame_layout, new QrReaderFragment())
-                    .commit();
-        }
-    }
+        statusMessage = findViewById(R.id.status_message);
+        barcodeValue = findViewById(R.id.barcode_value);
 
-    public void requestCameraPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
-        }
+        autoFocus = findViewById(R.id.auto_focus);
+        useFlash = findViewById(R.id.use_flash);
+
+        findViewById(R.id.read_barcode).setOnClickListener(this);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case CAMERA_PERMISSION_CODE:
-                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
+    public void onClick(View v) {
+        if (v.getId() == R.id.read_barcode) {
+            Intent intent = new Intent(this, BarcodeCaptureActivity.class);
+            intent.putExtra(BarcodeCaptureActivity.AUTO_FOCUS, autoFocus.isChecked());
+            intent.putExtra(BarcodeCaptureActivity.USE_FLASH, useFlash.isChecked());
+
+            startActivityForResult(intent, RC_BARCODE_CAPTURE);
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_BARCODE_CAPTURE) {
+            if (resultCode == CommonStatusCodes.SUCCESS) {
+                if (data != null) {
+                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BARCODE_OBJECT);
+                    statusMessage.setText(R.string.barcode_success);
+                    barcodeValue.setText(barcode.displayValue);
+                    Timber.d("Barcode read: " + barcode.displayValue);
+                } else {
+                    statusMessage.setText(R.string.barcode_failure);
+                    Timber.d("No barcode captured, intent data is null");
                 }
+            } else {
+                statusMessage.setText(String.format(getString(R.string.barcode_error),
+                        CommonStatusCodes.getStatusCodeString(resultCode)));
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
