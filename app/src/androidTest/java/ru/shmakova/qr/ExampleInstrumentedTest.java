@@ -1,4 +1,4 @@
-package ru.shmakova.qrreader;
+package ru.shmakova.qr;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

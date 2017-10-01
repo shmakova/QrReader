@@ -1,4 +1,4 @@
-package ru.shmakova.qrreader.di.modules;
+package ru.shmakova.qr.di.modules;
 
 import android.app.Application;
 import android.support.annotation.NonNull;

@@ -1,4 +1,4 @@
-package ru.shmakova.qrreader;
+package ru.shmakova.qr;
 
 import org.junit.Test;
 

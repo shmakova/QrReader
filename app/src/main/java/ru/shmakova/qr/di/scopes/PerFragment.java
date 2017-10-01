@@ -1,4 +1,4 @@
-package ru.shmakova.qrreader.di.scopes;
+package ru.shmakova.qr.di.scopes;
 
 import javax.inject.Scope;
 

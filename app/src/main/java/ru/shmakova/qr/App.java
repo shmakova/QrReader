@@ -1,12 +1,12 @@
-package ru.shmakova.qrreader;
+package ru.shmakova.qr;
 
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import ru.shmakova.qrreader.di.components.ApplicationComponent;
-import ru.shmakova.qrreader.di.components.DaggerApplicationComponent;
-import ru.shmakova.qrreader.di.modules.ApplicationModule;
+import ru.shmakova.qr.di.components.ApplicationComponent;
+import ru.shmakova.qr.di.components.DaggerApplicationComponent;
+import ru.shmakova.qr.di.modules.ApplicationModule;
 import timber.log.Timber;
 
 /**

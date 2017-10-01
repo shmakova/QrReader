@@ -1,12 +1,12 @@
-package ru.shmakova.qrreader.di.components;
+package ru.shmakova.qr.di.components;
 
 import android.support.annotation.NonNull;
 
 import dagger.Subcomponent;
-import ru.shmakova.qrreader.di.modules.QrReaderModule;
-import ru.shmakova.qrreader.di.scopes.PerFragment;
-import ru.shmakova.qrreader.presentation.presenters.QrReaderPresenter;
-import ru.shmakova.qrreader.ui.fragments.QrReaderFragment;
+import ru.shmakova.qr.di.modules.QrReaderModule;
+import ru.shmakova.qr.di.scopes.PerFragment;
+import ru.shmakova.qr.presentation.qr.QrReaderFragment;
+import ru.shmakova.qr.presentation.qr.QrReaderPresenter;
 
 
 /**
